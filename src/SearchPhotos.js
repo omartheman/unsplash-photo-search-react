@@ -58,7 +58,6 @@ export default function SearchPhotos(){
           </div>)
         }
       </div>
-      <Button className="load-more" variant="outline-success">Load More Results</Button>
     </>
   )
 }

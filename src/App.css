@@ -7,7 +7,6 @@
 .pic-all-pics {
   /* Prevent vertical gaps */
   line-height: 0;
-    
   -webkit-column-count: 5;
   -webkit-column-gap:   0px;
   -moz-column-count:    5;
@@ -38,7 +37,7 @@
 .search-input {
   margin-right: 10px;
 }
-
+/* Default styles below */
 .App {
   text-align: center;
 }
