@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import Unsplash, {toJson} from 'unsplash-js';
 import Button from 'react-bootstrap/Button';
+import Masonry from 'react-masonry-css';
 
 const unsplash = new Unsplash({
   accessKey:"1P3Oawyt_niJXYQ3WSsOs1AyKtTjDaAQw6ZpJ1kNaBE"
@@ -27,9 +28,6 @@ export default function SearchPhotos(){
         setPics(json.results);
       });
   };
-  console.log('query: ', query)
-  console.log('pics: ', pics);
-  console.log('pics.length: ', pics.length)
   if (searched === true) {
     loadMore = 
       <form
@@ -45,8 +43,31 @@ export default function SearchPhotos(){
         </Button>
       </form>
   }
+  
+  const breakpointColumnsObj = {
+    default: 4,
+    1100: 3,
+    700: 2,
+    500: 1
+  };
+  
   return(
     <>
+      <Masonry
+        breakpointCols={breakpointColumnsObj}
+        className="my-masonry-grid"
+        columnClassName="my-masonry-grid_column"
+      >
+        {pics.map((pic) => 
+            <div key={pic.id}>
+              <img 
+                alt={pic.alt_description}
+                src={pic.urls.small}
+              />
+            </div>
+          )
+        }
+      </Masonry>
       <form
         onSubmit={(e) => searchPhotos(e, 1)}
         className="search-form"
