@@ -5,25 +5,50 @@ import Button from 'react-bootstrap/Button';
 const unsplash = new Unsplash({
   accessKey:"1P3Oawyt_niJXYQ3WSsOs1AyKtTjDaAQw6ZpJ1kNaBE"
 })
-
+let counter = 2;
+let loadMore = null;
+let searched = false;
 export default function SearchPhotos(){
   const [query, setQuery] = useState('');
   const [pics, setPics] = useState([]);
-  const searchPhotos = async (e) => {
+  const searchPhotos = async (e, multiplier) => {
+    searched = true;
+    console.log('multiplier', multiplier)
     e.preventDefault();
+    if (multiplier !== 1) {
+      counter++;
+    }
+    console.log('counter in searchPhotos: ', counter)
     unsplash.search
-      .photos(query, 1, 20)
+      .photos(query, 1, multiplier*20)
       .then(toJson)
       .then((json) => {
         console.log(json);
         setPics(json.results);
       });
   };
-  console.log(query)
+  console.log('query: ', query)
+  console.log('pics: ', pics);
+  console.log('pics.length: ', pics.length)
+  if (searched === true) {
+    loadMore = 
+      <form
+        onSubmit={(e) => searchPhotos(e, counter)}
+        className="search-form"
+      >
+        <Button 
+          className="search-button load-more" 
+          variant="outline-secondary"
+          type="submit"
+        >
+          Load More
+        </Button>
+      </form>
+  }
   return(
     <>
       <form
-        onSubmit={searchPhotos}
+        onSubmit={(e) => searchPhotos(e, 1)}
         className="search-form"
       >
         <label></label>
@@ -58,6 +83,7 @@ export default function SearchPhotos(){
           </div>)
         }
       </div>
+      {loadMore}
     </>
   )
 }
