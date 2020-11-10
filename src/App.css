@@ -1,5 +1,9 @@
 body {
-  background-color: lightgrey !important;
+  background-color: rgb(243, 243, 243) !important;
+}
+.back-to-top:focus {
+  outline: none;
+  box-shadow: none;
 }
 .my-masonry-grid {
   display: -webkit-box; /* Not needed if autoprefixing */

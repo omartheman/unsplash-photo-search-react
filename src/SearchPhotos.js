@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import Unsplash, {toJson} from 'unsplash-js';
 import Button from 'react-bootstrap/Button';
 import Masonry from 'react-masonry-css';
+import TopButton from './TopButton';
 
 const unsplash = new Unsplash({
   accessKey:"1P3Oawyt_niJXYQ3WSsOs1AyKtTjDaAQw6ZpJ1kNaBE"
@@ -9,6 +10,12 @@ const unsplash = new Unsplash({
 let counter = 2;
 let loadMore = null;
 let searched = false;
+const breakpointColumnsObj = {
+  default: 4,
+  1100: 3,
+  700: 2,
+  500: 1
+};
 export default function SearchPhotos(){
   const [query, setQuery] = useState('');
   const [pics, setPics] = useState([]);
@@ -43,31 +50,8 @@ export default function SearchPhotos(){
         </Button>
       </form>
   }
-  
-  const breakpointColumnsObj = {
-    default: 4,
-    1100: 3,
-    700: 2,
-    500: 1
-  };
-  
   return(
     <>
-      <Masonry
-        breakpointCols={breakpointColumnsObj}
-        className="my-masonry-grid"
-        columnClassName="my-masonry-grid_column"
-      >
-        {pics.map((pic) => 
-            <div key={pic.id}>
-              <img 
-                alt={pic.alt_description}
-                src={pic.urls.small}
-              />
-            </div>
-          )
-        }
-      </Masonry>
       <form
         onSubmit={(e) => searchPhotos(e, 1)}
         className="search-form"
@@ -90,21 +74,23 @@ export default function SearchPhotos(){
           Search
         </Button>
       </form>
-      <div className="pic-all-pics">
+      <Masonry
+        breakpointCols={breakpointColumnsObj}
+        className="my-masonry-grid"
+        columnClassName="my-masonry-grid_column"
+      >
         {pics.map((pic) => 
-          <div 
-            key={pic.id}          
-            className="pic-container"
-          >
-            <img 
-              className="pic-img"
-              alt={pic.alt_description}
-              src={pic.urls.small}
-            />
-          </div>)
+            <div key={pic.id}>
+              <img 
+                alt={pic.alt_description}
+                src={pic.urls.small}
+              />
+            </div>
+          )
         }
-      </div>
+      </Masonry>
       {loadMore}
+      <TopButton></TopButton>
     </>
   )
 }
