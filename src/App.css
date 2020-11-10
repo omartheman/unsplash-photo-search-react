@@ -1,5 +1,10 @@
+.h1 {
+  margin: 20px 0 20px !important;
+}
+.load-more {
+  margin: 30px !important;
+}
 .pic-all-pics {
-  
   /* Prevent vertical gaps */
   line-height: 0;
     
@@ -11,14 +16,27 @@
   column-gap:           0px;
 }
 .pic-container { 
-  display: inline-block;;
+  display: inline-block;
+  margin-bottom: 5px;
+  margin-left: 5px;
 }
 .pic-img {
   width: 100% !important;
+  border-radius: 5px;
   height: auto !important;
 }
 .search-form {
+  
   margin-bottom: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.search-button {
+  border-radius: 10px;
+}
+.search-input {
+  margin-right: 10px;
 }
 
 .App {
