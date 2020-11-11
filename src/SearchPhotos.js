@@ -7,6 +7,7 @@ import LightboxItem from './Lightbox';
 const unsplash = new Unsplash({
   accessKey:"1P3Oawyt_niJXYQ3WSsOs1AyKtTjDaAQw6ZpJ1kNaBE"
 })
+
 let counter = 2;
 let loadMore = null;
 let searched = false;
@@ -16,7 +17,13 @@ const breakpointColumnsObj = {
   700: 2,
   500: 1
 };
-export default function SearchPhotos(){
+let isOpen = false;
+let photoIndex = 0;
+
+export default function SearchPhotos ()
+
+{
+  console.log('fucntion rendered ')
   const [query, setQuery] = useState('');
   const [pics, setPics] = useState([]);
   const searchPhotos = async (e, multiplier) => {
@@ -34,6 +41,11 @@ export default function SearchPhotos(){
         console.log(json);
         setPics(json.results);
       });
+  };
+  const openLightbox = async (e) => {
+    isOpen = true;
+    photoIndex = Number(e.target.id);
+    console.log(photoIndex)
   };
   if (searched === true) {
     loadMore = 
@@ -54,10 +66,13 @@ export default function SearchPhotos(){
     pics
   ;
   console.log('images: ',images);
+  console.log('isopen in searchphotos', isOpen)
   return(
     <>
       <LightboxItem
         images={images}
+        isOpen={isOpen}
+        photoIndex={photoIndex}
       />
       <form
         onSubmit={(e) => searchPhotos(e, 1)}
@@ -90,11 +105,14 @@ export default function SearchPhotos(){
             <div 
             // Make div open lightbox with id_key on click
               key={pic.id} 
-              id_key={index}
             >
               <img 
                 alt={pic.alt_description}
                 src={pic.urls.small}
+                id={index}
+                onClick={(e) => {
+                  openLightbox(e);
+                }}
               />
             </div>
           )

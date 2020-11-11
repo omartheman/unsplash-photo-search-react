@@ -5,17 +5,13 @@ import 'react-image-lightbox/style.css'; // This only needs to be imported once 
 export default class LightboxItem extends Component {
   constructor(props) {
     super(props);
- 
-    this.state = {
-      photoIndex: 0,
-      isOpen: false,
-    };
   }
  
   render() {
-    const { photoIndex, isOpen } = this.state;
-    const { images } = this.props;
+    console.log('lightbox rendred')
+    const { photoIndex, images, isOpen } = this.props;
     console.log('images from lightbox', images)
+    console.log('isopen in lightboxx', isOpen)
     return (
       <div>
         {/* We need to call this function when we click on an image */}
