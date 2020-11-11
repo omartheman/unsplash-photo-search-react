@@ -28,41 +28,63 @@ class SearchPhotos extends Component{
       isOpen: false,
       photoIndex: 0,
       top: 0,
-      results: false
+      results: false,
+      loadMessage: null
     }
     this.searchPhotos = this.searchPhotos.bind(this);
     this.openLightbox = this.openLightbox.bind(this);
     this.closeLightbox = this.closeLightbox.bind(this);
     this.changeLightbox = this.changeLightbox.bind(this);
     this.loadScroll = this.loadScroll.bind(this);
+    this.runLoadMessage = this.runLoadMessage.bind(this);
   }
   searchPhotos (e, multiplier){
-    var doc = document.documentElement;
-    var top = (window.pageYOffset || doc.scrollTop)  - (doc.clientTop || 0);
-    this.setState({top})
-
-    const {counter, query} = this.state;
-    if (this.state.query !== '') {
-      this.setState({searched: true});
-    }
     e.preventDefault();
-    if (multiplier !== 1) {
-      this.setState({counter: counter+1})
-    }
+    const {counter, query} = this.state;
+    
+    const loadMessage = 'Loading... 🌌';
+    this.setState({loading: true, loadMessage})
+    
     unsplash.search
       .photos(query, 1, multiplier*20)
       .then(toJson)
       .then((json) => {
         this.setState({pics: json.results});
-        console.log('json', json.results)
-        if (json.results.length > 0) {
-          this.setState({results: true})
-        } 
       })
-      .then(()=> {
+      .then(() => {
         window.scrollTo(0, this.state.top);
+        this.setState({loading: false})
+        this.runLoadMessage();
       })
+
+      var doc = document.documentElement;
+      var top = (window.pageYOffset || doc.scrollTop)  - (doc.clientTop || 0);
+      this.setState({top})
+
+    if (multiplier !== 1) {
+      this.setState({counter: counter+1})
+    }
   };
+  runLoadMessage(){
+    const {query, pics, counter} = this.state;
+    if (query === '') {
+      const loadMessage = 'Please provide some keywords! 😄';
+      this.setState({loadMessage, pics: []})
+      return;
+    } else if (pics.length >= 1) {
+      const loadMessage =  
+        <LoadMoreButton 
+          setScrollHeight={this.setScrollHeight}
+          searchPhotos={this.searchPhotos} 
+          counter={counter}
+          loadScroll={this.loadScroll}
+      />;
+      this.setState({loadMessage})
+    } else if (pics.length < 1) {
+      const loadMessage = 'No results 😲 Maybe try some new keywords?'
+      this.setState({loadMessage})
+    } 
+  }
   openLightbox(e){
     this.setState({
       isOpen: true, 
@@ -77,35 +99,18 @@ class SearchPhotos extends Component{
   }
   loadScroll(){
     if (this.state.pics.length) {
-      console.log('scrolling................');
       document.getElementById(`${this.state.pics.length - 1}`).scrollIntoView();  
     }
   }
   render(){
-    const {query, pics, searched, counter, isOpen, photoIndex, results} = this.state;
-    let loadMore = null;
-    console.log(pics.length)
-    if (searched === true && results === false){
-      loadMore = <div>No results. Maybe try other keywords?</div>
-    } else if (searched === true && pics.length < 1){
-      loadMore = <div>Loading...</div>
-    } else if (searched === true) {
-      loadMore = 
-        <LoadMoreButton 
-          setScrollHeight={this.setScrollHeight}
-          searchPhotos={this.searchPhotos} 
-          counter={counter}
-          loadScroll={this.loadScroll}
-        />
-    }
-    console.log(this.state.pics)
+    const {query, pics, isOpen, photoIndex, loadMessage} = this.state;
     let pictures = pics.map((pic, index) => 
       <div className="pics-container" key={pic.id}>
         <div className="credits">
           <span>
-          <a href={pic.user.links.html} target="_blank">{pic.user.first_name + ' ' + pic.user.last_name} </a>
+          <a href={pic.user.links.html} target="_blank" rel="noreferrer">{pic.user.first_name + ' ' + pic.user.last_name} </a>
             <br/>
-            <span>on</span><br/><a href='https://unsplash.com/?utm_source=your_app_name&utm_medium=referral' target="_blank">Unsplash</a>
+            <span>on</span><br/><a href='https://unsplash.com/?utm_source=your_app_name&utm_medium=referral' target="_blank" rel="noreferrer">Unsplash</a>
             </span>
         </div>
         <img 
@@ -118,9 +123,7 @@ class SearchPhotos extends Component{
         />
       </div>
     );
-    var doc = document.documentElement;
-    var top = (window.pageYOffset || doc.scrollTop)  - (doc.clientTop || 0);
-    
+
     return(
       <>
         <LightboxItem
@@ -158,14 +161,11 @@ class SearchPhotos extends Component{
         >
           {pictures}
         </Masonry>
-        {loadMore}
+        {loadMessage}
         <ScrollUp></ScrollUp>
       </>
     )
   }
 }
-
-
-
 
 export default SearchPhotos;
