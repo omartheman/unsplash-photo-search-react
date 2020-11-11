@@ -5,6 +5,7 @@ import Masonry from 'react-masonry-css';
 import LightboxItem from './Lightbox';
 import ScrollUp from './ScrollUp';
 import LoadMoreButton from './LoadMoreButton';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 const unsplash = new Unsplash({
   accessKey:"1P3Oawyt_niJXYQ3WSsOs1AyKtTjDaAQw6ZpJ1kNaBE"
@@ -49,7 +50,7 @@ class SearchPhotos extends Component{
       this.setState({counter: counter+1})
     }
     unsplash.search
-      .photos(query, 1, multiplier*20)
+      .photos(query, 1, multiplier)
       .then(toJson)
       .then((json) => {
         this.setState({pics: json.results});
@@ -152,15 +153,41 @@ class SearchPhotos extends Component{
             Search
           </Button>
         </form>
-        <Masonry
+        {/* <Masonry
           breakpointCols={breakpointColumnsObj}
           className="my-masonry-grid"
           columnClassName="my-masonry-grid_column"
         >
           {pictures}
-        `</Masonry>
-        {loadMore}
+        </Masonry>
+        {loadMore} */}
         <ScrollUp></ScrollUp>
+        <InfiniteScroll
+          dataLength={pics}
+          next={(e) => this.loadScroll(e, 5)}
+          hasMore={true}
+          loader={
+            <img
+              src="https://res.cloudinary.com/chuloo/image/upload/v1550093026/scotch-logo-gif_jq4tgr.gif"
+              alt="loading"
+            />}
+        >
+          <div className="image-grid" style={{ marginTop: "30px" }}>
+              {true ?
+                  pics.map((pic, index) => (
+                    <div key={pic.id}>
+                      <img 
+                        alt={pic.alt_description}
+                        src={pic.urls.small}
+                        id={index}
+                        onClick={(e) => {
+                          this.openLightbox(e);
+                        }}
+                      />
+                    </div>
+                  )): ""}
+          </div>
+        </InfiniteScroll>
       </>
     )
   }
