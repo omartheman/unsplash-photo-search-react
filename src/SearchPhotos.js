@@ -27,7 +27,8 @@ class SearchPhotos extends Component{
       counter: 2,
       isOpen: false,
       photoIndex: 0,
-      top: 0
+      top: 0,
+      results: false
     }
     this.searchPhotos = this.searchPhotos.bind(this);
     this.openLightbox = this.openLightbox.bind(this);
@@ -41,7 +42,9 @@ class SearchPhotos extends Component{
     this.setState({top})
 
     const {counter, query} = this.state;
-    this.setState({searched: true});
+    if (this.state.query !== '') {
+      this.setState({searched: true});
+    }
     e.preventDefault();
     if (multiplier !== 1) {
       this.setState({counter: counter+1})
@@ -51,6 +54,10 @@ class SearchPhotos extends Component{
       .then(toJson)
       .then((json) => {
         this.setState({pics: json.results});
+        console.log('json', json.results)
+        if (json.results.length > 0) {
+          this.setState({results: true})
+        } 
       })
       .then(()=> {
         window.scrollTo(0, this.state.top);
@@ -75,9 +82,14 @@ class SearchPhotos extends Component{
     }
   }
   render(){
-    const {query, pics, searched, counter, isOpen, photoIndex} = this.state;
+    const {query, pics, searched, counter, isOpen, photoIndex, results} = this.state;
     let loadMore = null;
-    if (searched === true) {
+    console.log(pics.length)
+    if (searched === true && results === false){
+      loadMore = <div>No results. Maybe try other keywords?</div>
+    } else if (searched === true && pics.length < 1){
+      loadMore = <div>Loading...</div>
+    } else if (searched === true) {
       loadMore = 
         <LoadMoreButton 
           setScrollHeight={this.setScrollHeight}
