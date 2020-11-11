@@ -9,7 +9,7 @@ export default class LightboxItem extends Component {
       <div>
         {/* We need to call this function when we click on an image */}
         {/* When you click on an img, set the state of Lightbox. */}
- 
+        <a href="https://google.com">
         {isOpen && (
           <Lightbox
             mainSrc={images[photoIndex].urls.regular}
@@ -26,6 +26,7 @@ export default class LightboxItem extends Component {
             }
           />
         )}
+        </a>
       </div>
     );
   }

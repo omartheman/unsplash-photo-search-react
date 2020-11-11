@@ -38,9 +38,7 @@ class SearchPhotos extends Component{
   searchPhotos (e, multiplier){
     var doc = document.documentElement;
     var top = (window.pageYOffset || doc.scrollTop)  - (doc.clientTop || 0);
-    console.log('top at searchphotos is ', top)
-    this.setState({top}, ()=>{console.log('state of top is', this.state.top)})
-    console.log('state of top at searchphotos is', this.state.top)
+    this.setState({top})
 
     const {counter, query} = this.state;
     this.setState({searched: true});
@@ -56,20 +54,8 @@ class SearchPhotos extends Component{
       })
       .then(()=> {
         window.scrollTo(0, this.state.top);
-        
-        console.log('window is now at ', window.pageYOffset)
       })
   };
-  
-  componentDidUpdate(){
-  
-    console.log('length of this.state.pics',this.state.pics.length  - 1);
-    // if (this.state.pics.length) {
-    //   console.log('scrolling......')
-    //   document.getElementById(`${this.state.pics.length - 1}`).scrollIntoView();  
-    // }
-    console.log('window at end of searchphotos is now at ', window.pageYOffset)
-  }
   openLightbox(e){
     this.setState({
       isOpen: true, 
@@ -83,9 +69,8 @@ class SearchPhotos extends Component{
     this.setState({photoIndex: newIndex})
   }
   loadScroll(){
-    console.log('length of this.state.pics',this.state.pics.length  - 1);
     if (this.state.pics.length) {
-      console.log('scrolling,................');
+      console.log('scrolling................');
       document.getElementById(`${this.state.pics.length - 1}`).scrollIntoView();  
     }
   }
@@ -101,8 +86,16 @@ class SearchPhotos extends Component{
           loadScroll={this.loadScroll}
         />
     }
+    console.log(this.state.pics)
     let pictures = pics.map((pic, index) => 
-      <div key={pic.id}>
+      <div className="pics-container" key={pic.id}>
+        <div className="credits">
+          <span>
+          <a href={pic.user.links.html} target="_blank">{pic.user.first_name + ' ' + pic.user.last_name} </a>
+            <br/>
+            <span>on</span><br/><a href='https://unsplash.com/?utm_source=your_app_name&utm_medium=referral' target="_blank">Unsplash</a>
+            </span>
+        </div>
         <img 
           alt={pic.alt_description}
           src={pic.urls.small}
@@ -113,14 +106,8 @@ class SearchPhotos extends Component{
         />
       </div>
     );
-
-    
     var doc = document.documentElement;
     var top = (window.pageYOffset || doc.scrollTop)  - (doc.clientTop || 0);
-    console.log('top at render is ', top)
-
-    console.log('window in render is now at ', window.pageYOffset)
-
     
     return(
       <>
@@ -158,7 +145,7 @@ class SearchPhotos extends Component{
           columnClassName="my-masonry-grid_column"
         >
           {pictures}
-        `</Masonry>
+        </Masonry>
         {loadMore}
         <ScrollUp></ScrollUp>
       </>
