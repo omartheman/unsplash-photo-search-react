@@ -12,6 +12,7 @@
     "react-back-to-top-button": "0.0.14",
     "react-bootstrap": "^1.4.0",
     "react-dom": "^17.0.1",
+    "react-image-lightbox": "^5.1.1",
     "react-infinite-scroll-component": "^5.1.0",
     "react-masonry-css": "^1.0.14",
     "react-responsive-masonry": "^2.1.0",

@@ -13,10 +13,9 @@ class TopButton extends Component {
         speed={1500}
         easing="easeInOutQuint"
       >
-        <Button 
-          variant="success">
+        <div className="btn btn-success">
             Back to Top
-        </Button>
+        </div>
       </BackToTop>
     );
   }

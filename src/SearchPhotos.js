@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import Unsplash, {toJson} from 'unsplash-js';
 import Button from 'react-bootstrap/Button';
 import Masonry from 'react-masonry-css';
-import TopButton from './TopButton';
+import LightboxItem from './Lightbox';
 
 const unsplash = new Unsplash({
   accessKey:"1P3Oawyt_niJXYQ3WSsOs1AyKtTjDaAQw6ZpJ1kNaBE"
@@ -50,8 +50,15 @@ export default function SearchPhotos(){
         </Button>
       </form>
   }
+  const images = 
+    pics
+  ;
+  console.log('images: ',images);
   return(
     <>
+      <LightboxItem
+        images={images}
+      />
       <form
         onSubmit={(e) => searchPhotos(e, 1)}
         className="search-form"
@@ -79,8 +86,12 @@ export default function SearchPhotos(){
         className="my-masonry-grid"
         columnClassName="my-masonry-grid_column"
       >
-        {pics.map((pic) => 
-            <div key={pic.id}>
+        {pics.map((pic, index) => 
+            <div 
+            // Make div open lightbox with id_key on click
+              key={pic.id} 
+              id_key={index}
+            >
               <img 
                 alt={pic.alt_description}
                 src={pic.urls.small}
@@ -90,7 +101,6 @@ export default function SearchPhotos(){
         }
       </Masonry>
       {loadMore}
-      <TopButton></TopButton>
     </>
   )
 }
