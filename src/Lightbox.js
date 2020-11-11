@@ -3,38 +3,26 @@ import Lightbox from 'react-image-lightbox';
 import 'react-image-lightbox/style.css'; // This only needs to be imported once in your app
  
 export default class LightboxItem extends Component {
-  constructor(props) {
-    super(props);
-  }
- 
   render() {
-    console.log('lightbox rendred')
-    const { photoIndex, images, isOpen } = this.props;
-    console.log('images from lightbox', images)
-    console.log('isopen in lightboxx', isOpen)
+    const { photoIndex, images, isOpen, closeLightbox, changeLightbox } = this.props;
     return (
       <div>
         {/* We need to call this function when we click on an image */}
         {/* When you click on an img, set the state of Lightbox. */}
-        <button type="button" onClick={() => this.setState({ isOpen: true })}>
-          Open Lightbox
-        </button>
  
         {isOpen && (
           <Lightbox
             mainSrc={images[photoIndex].urls.regular}
             nextSrc={images[(photoIndex + 1) % images.length].urls.regular}
             prevSrc={images[(photoIndex + images.length - 1) % images.length].urls.regular}
-            onCloseRequest={() => this.setState({ isOpen: false })}
-            onMovePrevRequest={() =>
-              this.setState({
-                photoIndex: (photoIndex + images.length - 1) % images.length,
-              })
+            onCloseRequest={() => {closeLightbox()}}
+            onMovePrevRequest={() => {
+              const previousImage = (photoIndex + images.length - 1) % images.length;
+              changeLightbox(previousImage)}
             }
-            onMoveNextRequest={() =>
-              this.setState({
-                photoIndex: (photoIndex + 1) % images.length,
-              })
+            onMoveNextRequest={() =>{
+              const previousImage = (photoIndex + 1) % images.length;
+              changeLightbox(previousImage)}
             }
           />
         )}

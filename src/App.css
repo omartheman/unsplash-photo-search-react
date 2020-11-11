@@ -1,4 +1,4 @@
-body {
+npbody {
   background-color: rgb(243, 243, 243) !important;
 }
 .back-to-top:focus {
@@ -22,10 +22,16 @@ body {
   margin-bottom: 10px;
 }
 .my-masonry-grid_column img {
+  cursor: pointer;
   width: 100%;
   max-width: 100%;
   border-radius: 5px;
 }
+.my-masonry-grid_column img:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 5px 0.5px black;
+}
+
 /* Optional, different gutter size on mobile */
 @media (max-width: 800px) {
   .my-masonry-grid {
@@ -45,28 +51,7 @@ body {
 .load-more {
   margin: 30px !important;
 }
-.pic-all-pics {
-  /* Prevent vertical gaps */
-  line-height: 0;
-  -webkit-column-count: 5;
-  -webkit-column-gap:   0px;
-  -moz-column-count:    5;
-  -moz-column-gap:      0px;
-  column-count:         5;
-  column-gap:           0px;
-}
-.pic-container { 
-  display: inline-block;
-  margin-bottom: 5px;
-  margin-left: 5px;
-}
-.pic-img {
-  width: 100% !important;
-  border-radius: 5px;
-  height: auto !important;
-}
 .search-form {
-  
   margin-bottom: 30px;
   display: flex;
   align-items: center;
@@ -78,6 +63,10 @@ body {
 .search-input {
   margin-right: 10px;
 }
+.ScrollUpButton__Container {
+  border-radius: 10px;
+}
+
 /* Default styles below */
 .App {
   text-align: center;
