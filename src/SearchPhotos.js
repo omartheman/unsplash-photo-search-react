@@ -27,7 +27,6 @@ class SearchPhotos extends Component{
       counter: 2,
       isOpen: false,
       photoIndex: 0,
-      top: 0,
       results: false,
       loadMessage: null
     }
@@ -35,13 +34,11 @@ class SearchPhotos extends Component{
     this.openLightbox = this.openLightbox.bind(this);
     this.closeLightbox = this.closeLightbox.bind(this);
     this.changeLightbox = this.changeLightbox.bind(this);
-    this.loadScroll = this.loadScroll.bind(this);
     this.runLoadMessage = this.runLoadMessage.bind(this);
   }
   searchPhotos (e, multiplier){
     e.preventDefault();
     const {counter, query} = this.state;
-    
     const loadMessage = 'Loading... 🌌';
     this.setState({loading: true, loadMessage})
     
@@ -49,17 +46,14 @@ class SearchPhotos extends Component{
       .photos(query, 1, multiplier*20)
       .then(toJson)
       .then((json) => {
+        console.log(window.pageYOffset)
         this.setState({pics: json.results});
       })
       .then(() => {
-        window.scrollTo(0, this.state.top);
         this.setState({loading: false})
         this.runLoadMessage();
+        console.log(window.pageYOffset)
       })
-
-      var doc = document.documentElement;
-      var top = (window.pageYOffset || doc.scrollTop)  - (doc.clientTop || 0);
-      this.setState({top})
 
     if (multiplier !== 1) {
       this.setState({counter: counter+1})
@@ -74,10 +68,8 @@ class SearchPhotos extends Component{
     } else if (pics.length >= 1) {
       const loadMessage =  
         <LoadMoreButton 
-          setScrollHeight={this.setScrollHeight}
           searchPhotos={this.searchPhotos} 
           counter={counter}
-          loadScroll={this.loadScroll}
       />;
       this.setState({loadMessage})
     } else if (pics.length < 1) {
@@ -96,11 +88,6 @@ class SearchPhotos extends Component{
   }
   changeLightbox(newIndex){
     this.setState({photoIndex: newIndex})
-  }
-  loadScroll(){
-    if (this.state.pics.length) {
-      document.getElementById(`${this.state.pics.length - 1}`).scrollIntoView();  
-    }
   }
   render(){
     const {query, pics, isOpen, photoIndex, loadMessage} = this.state;
@@ -126,13 +113,6 @@ class SearchPhotos extends Component{
 
     return(
       <>
-        <LightboxItem
-          images={pics}
-          isOpen={isOpen}
-          photoIndex={photoIndex}
-          closeLightbox={this.closeLightbox}
-          changeLightbox={this.changeLightbox}
-        />
         <form
           onSubmit={(e) => this.searchPhotos(e, 1)}
           className="search-form"
@@ -163,6 +143,13 @@ class SearchPhotos extends Component{
         </Masonry>
         {loadMessage}
         <ScrollUp></ScrollUp>
+        <LightboxItem
+          images={pics}
+          isOpen={isOpen}
+          photoIndex={photoIndex}
+          closeLightbox={this.closeLightbox}
+          changeLightbox={this.changeLightbox}
+        />
       </>
     )
   }
