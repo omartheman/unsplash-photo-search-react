@@ -26,14 +26,22 @@ class SearchPhotos extends Component{
       searched: false,
       counter: 2,
       isOpen: false,
-      photoIndex: 0
+      photoIndex: 0,
+      top: 0
     }
     this.searchPhotos = this.searchPhotos.bind(this);
     this.openLightbox = this.openLightbox.bind(this);
     this.closeLightbox = this.closeLightbox.bind(this);
     this.changeLightbox = this.changeLightbox.bind(this);
+    this.loadScroll = this.loadScroll.bind(this);
   }
   searchPhotos (e, multiplier){
+    var doc = document.documentElement;
+    var top = (window.pageYOffset || doc.scrollTop)  - (doc.clientTop || 0);
+    console.log('top at searchphotos is ', top)
+    this.setState({top}, ()=>{console.log('state of top is', this.state.top)})
+    console.log('state of top at searchphotos is', this.state.top)
+
     const {counter, query} = this.state;
     this.setState({searched: true});
     e.preventDefault();
@@ -45,8 +53,23 @@ class SearchPhotos extends Component{
       .then(toJson)
       .then((json) => {
         this.setState({pics: json.results});
-      });
+      })
+      .then(()=> {
+        window.scrollTo(0, this.state.top);
+        
+        console.log('window is now at ', window.pageYOffset)
+      })
   };
+  
+  componentDidUpdate(){
+  
+    console.log('length of this.state.pics',this.state.pics.length  - 1);
+    // if (this.state.pics.length) {
+    //   console.log('scrolling......')
+    //   document.getElementById(`${this.state.pics.length - 1}`).scrollIntoView();  
+    // }
+    console.log('window at end of searchphotos is now at ', window.pageYOffset)
+  }
   openLightbox(e){
     this.setState({
       isOpen: true, 
@@ -59,11 +82,24 @@ class SearchPhotos extends Component{
   changeLightbox(newIndex){
     this.setState({photoIndex: newIndex})
   }
+  loadScroll(){
+    console.log('length of this.state.pics',this.state.pics.length  - 1);
+    if (this.state.pics.length) {
+      console.log('scrolling,................');
+      document.getElementById(`${this.state.pics.length - 1}`).scrollIntoView();  
+    }
+  }
   render(){
-    const {images, query, pics, searched, counter, isOpen, photoIndex} = this.state;
+    const {query, pics, searched, counter, isOpen, photoIndex} = this.state;
     let loadMore = null;
     if (searched === true) {
-      loadMore = <LoadMoreButton searchPhotos={this.searchPhotos} counter={counter}/>
+      loadMore = 
+        <LoadMoreButton 
+          setScrollHeight={this.setScrollHeight}
+          searchPhotos={this.searchPhotos} 
+          counter={counter}
+          loadScroll={this.loadScroll}
+        />
     }
     let pictures = pics.map((pic, index) => 
       <div key={pic.id}>
@@ -77,6 +113,15 @@ class SearchPhotos extends Component{
         />
       </div>
     );
+
+    
+    var doc = document.documentElement;
+    var top = (window.pageYOffset || doc.scrollTop)  - (doc.clientTop || 0);
+    console.log('top at render is ', top)
+
+    console.log('window in render is now at ', window.pageYOffset)
+
+    
     return(
       <>
         <LightboxItem
@@ -113,7 +158,7 @@ class SearchPhotos extends Component{
           columnClassName="my-masonry-grid_column"
         >
           {pictures}
-        </Masonry>
+        `</Masonry>
         {loadMore}
         <ScrollUp></ScrollUp>
       </>
